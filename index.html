@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تحدي الكيمياء: الأحماض والقواعد</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Tajawal', sans-serif;
+    }
+    .formula {
+      font-family: 'Courier New', Courier, monospace;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center p-4">
+
+  <main class="w-full max-w-xl bg-slate-800/90 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-700 p-6 md:p-8">
+    
+    <!-- شاشة البداية -->
+    <section id="start-screen" class="text-center space-y-6">
+      <div class="inline-flex p-4 bg-teal-500/10 rounded-full border border-teal-500/30 text-teal-400">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-3xl font-extrabold text-teal-400">مختبر الكيمياء التفاعلي</h1>
+        <p class="text-slate-400 mt-2 text-sm md:text-base">اختبر معلوماتك حول الأحماض، القواعد، صيغها، وأماكن وجودها في حياتنا اليومية!</p>
+      </div>
+      
+      <div class="bg-slate-700/50 p-4 rounded-xl text-right text-sm text-slate-300 space-y-2 border border-slate-600">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-teal-400"></span>
+          <span>عدد الأسئلة: <strong>10 أسئلة متنوعة</strong></span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-teal-400"></span>
+          <span>نقاط كل إجابة صحيحة: <strong>10 نقاط</strong></span>
+        </div>
+      </div>
+
+      <button id="start-btn" class="w-full py-3.5 px-6 bg-teal-500 hover:bg-teal-400 text-slate-900 font-bold rounded-xl transition duration-200 shadow-lg shadow-teal-500/20 active:scale-[0.99]">
+        ابدأ التحدي الآن
+      </button>
+    </section>
+
+    <!-- شاشة الأسئلة -->
+    <section id="quiz-screen" class="hidden space-y-6">
+      <header class="flex justify-between items-center pb-4 border-b border-slate-700 text-sm">
+        <span id="question-progress" class="font-semibold text-slate-400">السؤال 1 من 10</span>
+        <span class="font-bold text-teal-400 bg-teal-400/10 px-3 py-1 rounded-full border border-teal-400/20">
+          النقاط: <span id="current-score">0</span>
+        </span>
+      </header>
+
+      <!-- شريط التقدم -->
+      <div class="w-full bg-slate-700 h-2 rounded-full overflow-hidden">
+        <div id="progress-bar" class="bg-teal-400 h-full w-0 transition-all duration-300"></div>
+      </div>
+
+      <div>
+        <span id="question-category" class="inline-block text-xs font-semibold px-2.5 py-1 rounded-md bg-slate-700 text-slate-300 mb-2"></span>
+        <h2 id="question-text" class="text-xl md:text-2xl font-bold text-slate-100 leading-relaxed"></h2>
+      </div>
+
+      <div id="options-container" class="space-y-3">
+        <!-- الخيارات تضاف برمجياً -->
+      </div>
+
+      <div id="feedback" class="hidden p-4 rounded-xl text-sm border font-medium"></div>
+
+      <button id="next-btn" class="hidden w-full py-3 px-6 bg-slate-700 hover:bg-slate-600 text-slate-100 font-bold rounded-xl transition">
+        السؤال التالي
+      </button>
+    </section>
+
+    <!-- شاشة النتيجة النهائية -->
+    <section id="result-screen" class="hidden text-center space-y-6">
+      <div id="result-icon" class="inline-flex p-4 rounded-full text-5xl"></div>
+      <div>
+        <h2 class="text-3xl font-extrabold" id="result-title"></h2>
+        <p class="text-slate-400 mt-2" id="result-desc"></p>
+      </div>
+
+      <div class="bg-slate-700/50 p-6 rounded-2xl border border-slate-600 space-y-3">
+        <div class="text-4xl font-extrabold text-teal-400" id="final-score">0 / 100</div>
+        <div class="text-sm text-slate-300" id="accuracy-rate"></div>
+      </div>
+
+      <button id="restart-btn" class="w-full py-3.5 px-6 bg-teal-500 hover:bg-teal-400 text-slate-900 font-bold rounded-xl transition duration-200">
+        إعادة الاختبار
+      </button>
+    </section>
+
+  </main>
+
+  <script>
+    const quizData = [
+      {
+        category: "أحماض المعدة",
+        question: "ما هو الحمض الموجود في عُصارة المَعِدة، وما هي صيغته الكيميائية؟",
+        options: [
+          { text: "حمض الهيدروكلوريك (HCl)", correct: true },
+          { text: "حمض النّتريك (HNO₃)", correct: false },
+          { text: "حمض الكبريتيك (H₂SO₄)", correct: false },
+          { text: "حمض الكربونيك (H₂CO₃)", correct: false }
+        ],
+        explanation: "حمض الهيدروكلوريك (HCl) يفرز طبيعياً في عصارة المعدة للمساعدة في هضم الطعام."
+      },
+      {
+        category: "بطاريات السيارات",
+        question: "أيّ من الأحماض التالية يُستخدم في بطاريات السيارات؟",
+        options: [
+          { text: "حمض الكربونيك", correct: false },
+          { text: "حمض الكبريتيك", correct: true },
+          { text: "حمض اللّاكتيك", correct: false },
+          { text: "حمض التّرتريك", correct: false }
+        ],
+        explanation: "حمض الكبريتيك (H₂SO₄) هو المحلول الحمضي المستخدم في بطاريات السيارات."
+      },
+      {
+        category: "المشروبات والأطعمة",
+        question: "ما هو الحمض الموجود في المشروبات الغازية وما صيغته الكيميائية؟",
+        options: [
+          { text: "حمض الهيدروكلوريك (HCl)", correct: false },
+          { text: "حمض الخلّيك (CH₃COOH)", correct: false },
+          { text: "حمض الكربونيك (H₂CO₃)", correct: true },
+          { text: "حمض النّتريك (HNO₃)", correct: false }
+        ],
+        explanation: "حمض الكربونيك (H₂CO₃) يتكوّن نتيجة ذوبان غاز ثاني أكسيد الكربون في الماء داخل المشروبات الغازية."
+      },
+      {
+        category: "صناعة الصابون",
+        question: "القاعدة المستخدمة في صناعة الصابون هي هيدروكسيد الصوديوم، فما صيغتها؟",
+        options: [
+          { text: "NaOH", correct: true },
+          { text: "Mg(OH)₂", correct: false },
+          { text: "NH₄OH", correct: false },
+          { text: "Ca(OH)₂", correct: false }
+        ],
+        explanation: "هيدروكسيد الصوديوم صيغته NaOH ويدخل في تفاعل تصبن الدهون لتصنيع الصابون."
+      },
+      {
+        category: "الصحة والدواء",
+        question: "أي قاعدة كيميائية تُستعمل في أدوية علاج الحُموضة؟",
+        options: [
+          { text: "هيدروكسيد الكالسيوم Ca(OH)₂", correct: false },
+          { text: "هيدروكسيد الماغنيسيوم Mg(OH)₂", correct: true },
+          { text: "هيدروكسيد الأمونيوم NH₄OH", correct: false },
+          { text: "هيدروكسيد الصوديوم NaOH", correct: false }
+        ],
+        explanation: "هيدروكسيد الماغنيسيوم Mg(OH)₂ يعمل كمضاد للحموضة لمعادلة حمض المعدة الزائد."
+      },
+      {
+        category: "مواد البناء",
+        question: "تُستخدم قاعدة هيدروكسيد الكالسيوم في مواد البناء، ما هي صيغتها؟",
+        options: [
+          { text: "CaOH", correct: false },
+          { text: "Ca(OH)₂", correct: true },
+          { text: "Mg(OH)₂", correct: false },
+          { text: "KOH", correct: false }
+        ],
+        explanation: "صيغة هيدروكسيد الكالسيوم هي Ca(OH)₂ ويُعرف عادة بالجير المطفأ ويدخل في مواد البناء."
+      },
+      {
+        category: "الأسمدة والمنظفات",
+        question: "ما اسم وصيغة القاعدة التي تدخل في صناعة الأسمدة والمُنظّفات؟",
+        options: [
+          { text: "هيدروكسيد الأمونيوم (NH₄OH)", correct: true },
+          { text: "هيدروكسيد الصوديوم (NaOH)", correct: false },
+          { text: "حمض النّتريك (HNO₃)", correct: false },
+          { text: "حمض الكبريتيك (H₂SO₄)", correct: false }
+        ],
+        explanation: "هيدروكسيد الأمونيوم (NH₄OH) يدخل في صناعة الأسمدة والعديد من سوائل التنظيف المنزلية."
+      },
+      {
+        category: "أحماض الفواكه",
+        question: "أيّ من الأحماض التالية يوجد بشكل طبيعي في فاكهة العنب؟",
+        options: [
+          { text: "حمض اللّاكتيك", correct: false },
+          { text: "حمض الخلّيك", correct: false },
+          { text: "حمض التّرتريك", correct: true },
+          { text: "حمض الكربونيك", correct: false }
+        ],
+        explanation: "حمض التّرتريك هو الحمض العضوي الرئيسي المميز لفاكهة العنب."
+      },
+      {
+        category: "الأغذية المخمرة",
+        question: "الحمض الموجود في الزبادي يُعرف باسم:",
+        options: [
+          { text: "حمض الخلّيك", correct: false },
+          { text: "حمض اللّاكتيك", correct: true },
+          { text: "حمض التّرتريك", correct: false },
+          { text: "حمض النّتريك", correct: false }
+        ],
+        explanation: "حمض اللّاكتيك ينتج عن تخمير سكر الحليب بواسطة بكتيريا حمض اللبن في الزبادي."
+      },
+      {
+        category: "المطبخ والمنزل",
+        question: "ما هو الحمض الموجود في الخَلّ المنزلي؟",
+        options: [
+          { text: "حمض الكبريتيك", correct: false },
+          { text: "حمض التّرتريك", correct: false },
+          { text: "حمض الهيدروكلوريك", correct: false },
+          { text: "حمض الخلّيك", correct: true }
+        ],
+        explanation: "حمض الخلّيك (حمض الأسيتيك) هو المكون الأساسي الذي يعطي الخل رائحته وطعمه الحامض."
+      }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const startScreen = document.getElementById("start-screen");
+    const quizScreen = document.getElementById("quiz-screen");
+    const resultScreen = document.getElementById("result-screen");
+
+    const startBtn = document.getElementById("start-btn");
+    const nextBtn = document.getElementById("next-btn");
+    const restartBtn = document.getElementById("restart-btn");
+
+    const questionProgress = document.getElementById("question-progress");
+    const currentScoreEl = document.getElementById("current-score");
+    const progressBar = document.getElementById("progress-bar");
+    const questionCategory = document.getElementById("question-category");
+    const questionText = document.getElementById("question-text");
+    const optionsContainer = document.getElementById("options-container");
+    const feedback = document.getElementById("feedback");
+
+    startBtn.addEventListener("click", () => {
+      startScreen.classList.add("hidden");
+      quizScreen.classList.remove("hidden");
+      loadQuestion();
+    });
+
+    function loadQuestion() {
+      const q = quizData[currentQuestionIndex];
+      questionProgress.textContent = `السؤال ${currentQuestionIndex + 1} من ${quizData.length}`;
+      currentScoreEl.textContent = score;
+      progressBar.style.width = `${((currentQuestionIndex) / quizData.length) * 100}%`;
+      
+      questionCategory.textContent = q.category;
+      questionText.textContent = q.question;
+      
+      optionsContainer.innerHTML = "";
+      feedback.classList.add("hidden");
+      nextBtn.classList.add("hidden");
+
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "w-full text-right p-4 rounded-xl bg-slate-700/60 hover:bg-slate-700 border border-slate-600 text-slate-100 font-medium transition duration-150 flex items-center justify-between";
+        btn.innerHTML = `<span>${opt.text}</span><span class="w-6 h-6 rounded-full border border-slate-500 flex items-center justify-center text-xs text-slate-400">${idx + 1}</span>`;
+        btn.addEventListener("click", () => handleSelectOption(opt, btn));
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    function handleSelectOption(selectedOption, clickedButton) {
+      const q = quizData[currentQuestionIndex];
+      const buttons = optionsContainer.querySelectorAll("button");
+      
+      // تعطيل الضغط المتكرر
+      buttons.forEach(btn => btn.disabled = true);
+
+      if (selectedOption.correct) {
+        score += 10;
+        currentScoreEl.textContent = score;
+        clickedButton.classList.remove("bg-slate-700/60", "border-slate-600");
+        clickedButton.classList.add("bg-teal-500/20", "border-teal-500", "text-teal-300");
+        feedback.className = "p-4 rounded-xl text-sm border font-medium bg-teal-500/10 border-teal-500/30 text-teal-300";
+        feedback.textContent = `إجابة صحيحة وممتازة! ${q.explanation}`;
+      } else {
+        clickedButton.classList.remove("bg-slate-700/60", "border-slate-600");
+        clickedButton.classList.add("bg-rose-500/20", "border-rose-500", "text-rose-300");
+        
+        // إبراز الإجابة الصحيحة
+        buttons.forEach((btn, index) => {
+          if (q.options[index].correct) {
+            btn.classList.remove("bg-slate-700/60", "border-slate-600");
+            btn.classList.add("bg-teal-500/20", "border-teal-500", "text-teal-300");
+          }
+        });
+
+        feedback.className = "p-4 rounded-xl text-sm border font-medium bg-rose-500/10 border-rose-500/30 text-rose-300";
+        feedback.textContent = `إجابة غير دقيقة. ${q.explanation}`;
+      }
+
+      feedback.classList.remove("hidden");
+      nextBtn.classList.remove("hidden");
+      progressBar.style.width = `${((currentQuestionIndex + 1) / quizData.length) * 100}%`;
+    }
+
+    nextBtn.addEventListener("click", () => {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < quizData.length) {
+        loadQuestion();
+      } else {
+        showResults();
+      }
+    });
+
+    function showResults() {
+      quizScreen.classList.add("hidden");
+      resultScreen.classList.remove("hidden");
+
+      const finalScoreEl = document.getElementById("final-score");
+      const resultTitle = document.getElementById("result-title");
+      const resultDesc = document.getElementById("result-desc");
+      const resultIcon = document.getElementById("result-icon");
+      const accuracyRate = document.getElementById("accuracy-rate");
+
+      finalScoreEl.textContent = `${score} / ${quizData.length * 10}`;
+      const percentage = (score / (quizData.length * 10)) * 100;
+      accuracyRate.textContent = `نسبة الإجابات الصحيحة: ${percentage}%`;
+
+      if (percentage >= 80) {
+        resultTitle.textContent = "أداء كيميائي بارع!";
+        resultTitle.className = "text-3xl font-extrabold text-teal-400";
+        resultDesc.textContent = "لقد أتقنت حفظ وفهم الأحماض والقواعد ومواقع استخدامها بدقة عالية.";
+        resultIcon.className = "inline-flex p-4 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/30 text-5xl";
+        resultIcon.textContent = "🏆";
+      } else if (percentage >= 50) {
+        resultTitle.textContent = "أداء جيد!";
+        resultTitle.className = "text-3xl font-extrabold text-amber-400";
+        resultDesc.textContent = "لديك أساس جيد، لكن يمكنك مراجعة بعض الصيغ وأماكن الوجود للحصول على الدرجة الكاملة.";
+        resultIcon.className = "inline-flex p-4 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 text-5xl";
+        resultIcon.textContent = "🧪";
+      } else {
+        resultTitle.textContent = "تحتاج لمراجعة إضافية";
+        resultTitle.className = "text-3xl font-extrabold text-rose-400";
+        resultDesc.textContent = "ألقِ نظرة مرة أخرى على الجدول في الصورة وأعد المحاولة لتحقيق نتيجة أفضل.";
+        resultIcon.className = "inline-flex p-4 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/30 text-5xl";
+        resultIcon.textContent = "📚";
+      }
+    }
+
+    restartBtn.addEventListener("click", () => {
+      score = 0;
+      currentQuestionIndex = 0;
+      resultScreen.classList.add("hidden");
+      startScreen.classList.remove("hidden");
+    });
+  </script>
+</body>
+</html>
